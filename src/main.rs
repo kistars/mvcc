@@ -131,7 +131,7 @@ impl Transaction {
     // Read data, iterating from the last record to find the first visible one
     pub fn get(&self, key: &[u8]) -> Option<Vec<u8>> {
         let kvengine = self.kv.lock().unwrap();
-        for (k ,v ) in kvengine.iter().rev() {
+        for (k, v) in kvengine.iter().rev() {
             let key_version = decode_key(k);
             if key_version.raw_key.eq(key) && self.is_visible(key_version.version) {
                 return v.clone();
@@ -238,12 +238,12 @@ fn main() {
 
     // At this point T1 has not committed, so T2 sees
     tx2.print_all(); // a=a1 c=c1 d=d1 e=e1
-    tx1.commit();    // Commit T1
+    tx1.commit(); // Commit T1
     // T2 still cannot see T1's commit, because when T2 started, T2 hadn't committed yet (repeatable read)
     tx2.print_all(); // a=a1 c=c1 d=d1 e=e1
 
     // Begin another new transaction
-    let tx3= mvcc.begin_transaction();
+    let tx3 = mvcc.begin_transaction();
     // Time
     //  3
     //  2      X               uncommitted
